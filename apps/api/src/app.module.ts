@@ -1,23 +1,21 @@
 import { Module } from '@nestjs/common';
 
-import { SharedModule } from '@app/shared';
+import { PrismaModule, SharedModule } from '@app/shared';
 
-import { PrismaService } from './prisma.service';
-import { VideosModule } from './videos/videos.module';
 import { ProjectsModule } from './projects/projects.module';
 import { ScenesModule } from './scenes/scenes.module';
 import { ElementsModule } from './elements/elements.module';
+import { VideosModule } from './videos/videos.module';
 
 @Module({
   imports: [
+    PrismaModule,
     SharedModule,
 
-    VideosModule,
     ProjectsModule,
     ScenesModule,
     ElementsModule,
+    VideosModule,
   ],
-  providers: [PrismaService],
-  exports: [PrismaService],
 })
 export class AppModule {}

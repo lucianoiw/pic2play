@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '@app/shared';
 import { ElementsService } from '../elements/elements.service';
 
 import { ScenesService } from './scenes.service';

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '@app/shared';
 
 import { CreateElementProps } from '@app/shared/types';
 

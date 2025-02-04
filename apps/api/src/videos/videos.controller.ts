@@ -1,12 +1,11 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
+
+import { TasksService } from '@app/shared';
+import { CreateProjectProps } from '@app/shared/types';
 
 import { ProjectsService } from '../projects/projects.service';
-import { CreateProjectProps } from '../../../../libs/shared/src/types/projects';
 import { ScenesService } from '../scenes/scenes.service';
 import { ElementsService } from '../elements/elements.service';
-import { VIDEO_QUEUE } from '@app/shared';
 
 @Controller('videos')
 export class VideosController {
@@ -15,7 +14,7 @@ export class VideosController {
     private readonly scenesService: ScenesService,
     private readonly elementsService: ElementsService,
 
-    @InjectQueue(VIDEO_QUEUE) private readonly videoQueue: Queue,
+    private readonly tasksService: TasksService,
   ) {}
 
   @Post()
@@ -29,7 +28,7 @@ export class VideosController {
           scene,
         );
 
-        await this.videoQueue.add(createdScene);
+        // await this.videoQueue.add(createdScene);
 
         if (elements?.length) {
           await Promise.all(
@@ -52,10 +51,17 @@ export class VideosController {
     if (elements?.length) {
       await Promise.all(
         elements.map(async (element) => {
-          return await this.elementsService.create(createdProject.id, element);
+          const createdElement = await this.elementsService.create(
+            createdProject.id,
+            element,
+          );
+
+          return createdElement;
         }),
       );
     }
+
+    await this.tasksService.addProjectTask(createdProject.id);
 
     return this.projectsService.findOne(createdProject.id);
   }

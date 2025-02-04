@@ -10,6 +10,8 @@ export interface ProjectProps {
   resolution?: string;
   quality: ProjectQualityEnum;
   status: ProjectStatusEnum;
+
+  pending_tasks?: number;
 }
 
 export interface CreateProjectProps extends Omit<ProjectProps, 'id'> {
