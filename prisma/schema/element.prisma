@@ -1,0 +1,34 @@
+enum ElementStatusEnum {
+  pending
+  processing
+  completed
+}
+
+enum ElementTypeEnum {
+  image
+  audio
+  text
+}
+
+model Element {
+  id String @id @default(cuid())
+
+  description String?
+
+  status ElementStatusEnum? @default(pending)
+  type   ElementTypeEnum
+
+  source_url String? @db.Text
+  duration   Int?    @default(-1)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  project    Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project_id String
+
+  scene    Scene?  @relation(fields: [scene_id], references: [id], onDelete: Cascade)
+  scene_id String?
+
+  @@map("elements")
+}

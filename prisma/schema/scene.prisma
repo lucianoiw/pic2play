@@ -1,0 +1,23 @@
+enum SceneStatusEnum {
+  pending
+  processing
+  completed
+}
+
+model Scene {
+  id String @id @default(cuid())
+
+  description String?
+  status      SceneStatusEnum? @default(pending)
+  duration    Int?             @default(-1)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  project    Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project_id String
+
+  elements Element[]
+
+  @@map("scenes")
+}
