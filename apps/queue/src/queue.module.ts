@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
-import { QueueController } from './queue.controller';
-import { QueueService } from './queue.service';
+import { BullModule } from '@nestjs/bull';
+
+import { SharedModule, VIDEO_QUEUE } from '@app/shared';
+
+import { VideoProcessor } from './videos/videos.processor';
 
 @Module({
-  imports: [],
-  controllers: [QueueController],
-  providers: [QueueService],
+  imports: [SharedModule, BullModule.registerQueue({ name: VIDEO_QUEUE })],
+  providers: [VideoProcessor],
 })
 export class QueueModule {}

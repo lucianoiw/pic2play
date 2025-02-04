@@ -1,7 +1,7 @@
 import { ProjectQualityEnum, ProjectStatusEnum } from '@prisma/client';
 
-import { CreateSceneProps } from '../scenes/scenes.types';
-import { CreateElementProps } from '../elements/elements.types';
+import { CreateSceneProps } from './scenes';
+import { CreateElementProps } from './elements';
 
 export interface ProjectProps {
   id: string;

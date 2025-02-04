@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { ElementsService } from '../elements/elements.service';
 
-import { CreateSceneProps } from './scenes.types';
+import { CreateSceneProps } from '@app/shared/types';
 
 @Injectable()
 export class ScenesService {

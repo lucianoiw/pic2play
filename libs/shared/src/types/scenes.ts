@@ -1,6 +1,6 @@
 import { SceneStatusEnum } from '@prisma/client';
 
-import { CreateElementProps } from '../elements/elements.types';
+import { CreateElementProps } from './elements';
 
 export interface SceneProps {
   id: string;
@@ -12,5 +12,5 @@ export interface SceneProps {
 }
 
 export interface CreateSceneProps extends Omit<SceneProps, 'id'> {
-  elements: CreateElementProps[];
+  elements?: CreateElementProps[];
 }

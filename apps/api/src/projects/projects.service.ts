@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../prisma.service';
 
-import { CreateProjectProps } from './projects.types';
+import { CreateProjectProps } from '@app/shared/types';
 
 @Injectable()
 export class ProjectsService {
