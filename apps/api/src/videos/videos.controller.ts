@@ -19,50 +19,44 @@ export class VideosController {
 
   @Post()
   async create(@Body() { scenes, elements, ...project }: CreateProjectProps) {
-    const createdProject = await this.projectsService.create(project);
+    const { description, resolution, quality } = project;
 
+    const pending_tasks =
+      elements.length +
+      scenes.reduce((p, s) => {
+        return p + s.elements.length;
+      }, 0);
+
+    // Inserir um novo projeto no banco de dados
+    const createdProject = await this.projectsService.create({
+      description,
+      resolution,
+      quality,
+      pending_tasks,
+      pending_scenes_tasks: scenes.length,
+    });
+
+    // Inserir as cenas do projeto e os elementos de cada cena
     await Promise.all(
-      scenes.map(async ({ elements, ...scene }) => {
-        const createdScene = await this.scenesService.create(
-          createdProject.id,
-          scene,
-        );
-
-        // await this.videoQueue.add(createdScene);
-
-        if (elements?.length) {
-          await Promise.all(
-            elements.map(async (element) => {
-              const createdElement = await this.elementsService.create(
-                createdProject.id,
-                element,
-                createdScene.id,
-              );
-
-              return createdElement;
-            }),
-          );
-        }
-
-        return createdScene;
-      }),
+      scenes.map(async (scene) =>
+        this.scenesService.create(createdProject.id, scene),
+      ),
     );
 
+    // Inserir os elementos que não estão associados a nenhuma cena
     if (elements?.length) {
       await Promise.all(
-        elements.map(async (element) => {
-          const createdElement = await this.elementsService.create(
-            createdProject.id,
-            element,
-          );
-
-          return createdElement;
-        }),
+        elements.map(async (element) =>
+          this.elementsService.create(createdProject.id, element),
+        ),
       );
     }
 
-    await this.tasksService.addProjectTask(createdProject.id);
+    // Manda iniciar o processamento do projeto
+    await this.tasksService.initializeProject(createdProject.id);
 
-    return this.projectsService.findOne(createdProject.id);
+    return {
+      data: createdProject.id,
+    };
   }
 }

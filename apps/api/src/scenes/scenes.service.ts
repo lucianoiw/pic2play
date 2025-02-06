@@ -1,18 +1,17 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@app/shared';
-import { ElementsService } from '../elements/elements.service';
 
 import { CreateSceneProps } from '@app/shared/types';
 
 @Injectable()
 export class ScenesService {
-  constructor(
-    private prisma: PrismaService,
-    private readonly elementsService: ElementsService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
-  async create(project_id: string, { elements, ...data }: CreateSceneProps) {
+  async create(
+    project_id: string,
+    { description, status, duration, elements }: CreateSceneProps,
+  ) {
     const scene = await this.prisma.scene.create({
       data: {
         project: {
@@ -21,27 +20,30 @@ export class ScenesService {
           },
         },
 
-        description: data.description,
-        status: data.status,
-        duration: data.duration,
+        description,
+        status,
+        duration,
+        pending_tasks: elements?.length || 0,
+
+        elements: {
+          createMany: {
+            data: elements?.map(
+              ({ description, type, duration, source_url }) => ({
+                project_id,
+                description,
+                type,
+                duration,
+                source_url,
+              }),
+            ),
+          },
+        },
       },
 
       include: {
         elements: true,
       },
     });
-
-    if (elements?.length) {
-      await Promise.all(
-        elements.map(async (element) => {
-          return await this.elementsService.create(
-            project_id,
-            element,
-            scene.id,
-          );
-        }),
-      );
-    }
 
     return scene;
   }

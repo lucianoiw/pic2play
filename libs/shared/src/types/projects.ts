@@ -8,9 +8,9 @@ export interface ProjectProps {
 
   description?: string;
   resolution?: string;
-  quality: ProjectQualityEnum;
-  status: ProjectStatusEnum;
+  quality?: ProjectQualityEnum;
 
+  status?: ProjectStatusEnum;
   pending_tasks?: number;
 }
 

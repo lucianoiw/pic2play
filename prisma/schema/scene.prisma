@@ -11,6 +11,8 @@ model Scene {
   status      SceneStatusEnum? @default(pending)
   duration    Int?             @default(-1)
 
+  pending_tasks Int? @default(0)
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 

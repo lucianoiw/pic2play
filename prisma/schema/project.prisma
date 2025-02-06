@@ -14,12 +14,13 @@ model Project {
   id String @id @default(cuid())
 
   description String?
-  resolution  String?             @default("1920x1080")
-  quality     ProjectQualityEnum? @default(medium)
+  resolution  String? @default("1920x1080")
 
-  status ProjectStatusEnum? @default(pending)
+  quality ProjectQualityEnum? @default(medium)
+  status  ProjectStatusEnum?  @default(pending)
 
-  pending_tasks Int? @default(0)
+  pending_tasks        Int? @default(0)
+  pending_scenes_tasks Int? @default(0)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
